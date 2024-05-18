@@ -8,32 +8,11 @@ resource "aws_vpc" "primary_network" {
     createdBy   = "Terraform"
   }
 }
+# this is for creating subnets using reusable template with "count"
 
-
-resource "aws_subnet" "web" {
-  cidr_block = var.web_cidr
+resource "aws_subnet" "subnets" {
+  count      = var.subnetcount
   vpc_id     = aws_vpc.primary_network.id
-  tags = {
-    Name = "web"
-  }
-  depends_on = [aws_vpc.primary_network]
+  cidr_block = var.subnet_cidrs[count.index]
 
-}
-# my subnet
-resource "aws_subnet" "business" {
-  cidr_block = var.business_cidr
-  vpc_id     = aws_vpc.primary_network.id
-  tags = {
-    Name = "business"
-  }
-  depends_on = [aws_vpc.primary_network]
-}
-
-resource "aws_subnet" "data" {
-  cidr_block = var.data_cidr
-  vpc_id     = aws_vpc.primary_network.id
-  tags = {
-    Name = "data"
-  }
-  depends_on = [aws_vpc.primary_network]
 }
